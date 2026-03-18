@@ -33,6 +33,8 @@ module Legion
               end
 
               def blend(space_a_id:, space_b_id:, blend_type: :double_scope)
+                return nil unless BLEND_TYPES.include?(blend_type.to_sym)
+
                 raise ArgumentError, "Max blends (#{MAX_BLENDS}) reached" if @blends.size >= MAX_BLENDS
 
                 space_a = @spaces.fetch(space_a_id) { raise ArgumentError, "Space #{space_a_id} not found" }

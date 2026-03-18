@@ -99,6 +99,19 @@ RSpec.describe Legion::Extensions::Agentic::Language::ConceptualBlending::Helper
         engine.blend(space_a_id: 'bad', space_b_id: space_b.id)
       end.to raise_error(ArgumentError, /not found/)
     end
+
+    it 'rejects invalid blend_type' do
+      result = engine.blend(space_a_id: space_a.id, space_b_id: space_b.id, blend_type: :nonexistent_type)
+      expect(result).to be_nil
+    end
+
+    it 'accepts all BLEND_TYPES' do
+      blend_types = Legion::Extensions::Agentic::Language::ConceptualBlending::Helpers::Constants::BLEND_TYPES
+      blend_types.each do |val|
+        result = engine.blend(space_a_id: space_a.id, space_b_id: space_b.id, blend_type: val)
+        expect(result).not_to be_nil, "Expected #{val.inspect} to be accepted"
+      end
+    end
   end
 
   describe '#elaborate_blend' do

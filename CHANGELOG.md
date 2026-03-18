@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-03-18
+
+### Changed
+- Enforce BLEND_TYPES enum validation in `BlendingEngine#blend` — returns nil for invalid blend_type
+- Add 2 specs for BLEND_TYPES enforcement in blending engine spec
+
 ## [0.1.1] - 2026-03-18
 
 ### Changed
