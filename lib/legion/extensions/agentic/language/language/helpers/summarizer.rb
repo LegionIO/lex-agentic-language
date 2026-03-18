@@ -10,6 +10,8 @@ module Legion
               module_function
 
               def summarize_domain(traces, domain:, depth: :standard)
+                return nil unless Constants::DEPTHS.include?(depth.to_sym)
+
                 return empty_summary(domain) if traces.empty?
 
                 grouped = group_by_type(traces)
@@ -37,6 +39,8 @@ module Legion
               end
 
               def extract_key_facts(grouped, depth: :standard)
+                return nil unless Constants::DEPTHS.include?(depth.to_sym)
+
                 limit = case depth
                         when :brief    then 3
                         when :detailed then 15

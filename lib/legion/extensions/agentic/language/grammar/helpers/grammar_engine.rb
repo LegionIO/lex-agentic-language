@@ -15,6 +15,8 @@ module Legion
               end
 
               def create_construction(form:, meaning:, expression_type:, domain:, activation: DEFAULT_ACTIVATION)
+                return nil unless EXPRESSION_TYPES.include?(expression_type.to_sym)
+
                 prune_constructions_if_needed
                 construction = Construction.new(
                   form:            form,
@@ -30,6 +32,9 @@ module Legion
               def create_construal(scene:, perspective:, figure:, ground:,
                                    specificity: :intermediate, scope: :local,
                                    dynamicity: 0.5, construction_id: nil)
+                return nil unless SPECIFICITY_LEVELS.include?(specificity.to_sym)
+                return nil unless SCOPE_LEVELS.include?(scope.to_sym)
+
                 prune_construals_if_needed
                 construal = Construal.new(
                   scene:           scene,

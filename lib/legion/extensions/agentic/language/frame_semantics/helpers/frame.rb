@@ -23,6 +23,8 @@ module Legion
               end
 
               def add_slot(name:, slot_type: :core, required: true)
+                return nil unless SLOT_TYPES.include?(slot_type.to_sym)
+
                 @slots[name] = { type: slot_type, filler: nil, required: required }
                 self
               end

@@ -25,6 +25,18 @@ RSpec.describe Legion::Extensions::Agentic::Language::Language::Helpers::Summari
   end
 
   describe '.summarize_domain' do
+    it 'returns nil for invalid depth' do
+      result = described_class.summarize_domain([], domain: :networking, depth: :bogus)
+      expect(result).to be_nil
+    end
+
+    it 'accepts all valid DEPTHS' do
+      Legion::Extensions::Agentic::Language::Language::Helpers::Constants::DEPTHS.each do |depth|
+        result = described_class.summarize_domain([], domain: :networking, depth: depth)
+        expect(result).not_to be_nil
+      end
+    end
+
     it 'returns empty summary for no traces' do
       result = described_class.summarize_domain([], domain: :networking)
       expect(result[:knowledge_level]).to eq(:none)
@@ -90,6 +102,18 @@ RSpec.describe Legion::Extensions::Agentic::Language::Language::Helpers::Summari
   describe '.extract_key_facts' do
     let(:grouped) do
       { semantic: make_traces(10) }
+    end
+
+    it 'returns nil for invalid depth' do
+      result = described_class.extract_key_facts(grouped, depth: :bogus)
+      expect(result).to be_nil
+    end
+
+    it 'accepts all valid DEPTHS' do
+      Legion::Extensions::Agentic::Language::Language::Helpers::Constants::DEPTHS.each do |depth|
+        result = described_class.extract_key_facts(grouped, depth: depth)
+        expect(result).not_to be_nil
+      end
     end
 
     it 'limits facts by depth :brief' do

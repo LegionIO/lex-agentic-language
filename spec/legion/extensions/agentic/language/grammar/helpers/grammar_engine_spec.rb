@@ -29,6 +29,19 @@ RSpec.describe Legion::Extensions::Agentic::Language::Grammar::Helpers::GrammarE
       expect(c.expression_type).to eq(:nominal)
       expect(c.domain).to eq('nature')
     end
+
+    it 'returns nil for invalid expression_type' do
+      result = engine.create_construction(form: 'x', meaning: 'y', expression_type: :bogus, domain: 'd')
+      expect(result).to be_nil
+      expect(engine.to_h[:constructions_count]).to eq(0)
+    end
+
+    it 'accepts all valid EXPRESSION_TYPES' do
+      Legion::Extensions::Agentic::Language::Grammar::Helpers::Constants::EXPRESSION_TYPES.each do |type|
+        c = engine.create_construction(form: 'x', meaning: 'y', expression_type: type, domain: 'd')
+        expect(c).to be_a(Legion::Extensions::Agentic::Language::Grammar::Helpers::Construction)
+      end
+    end
   end
 
   describe '#create_construal' do
@@ -47,6 +60,32 @@ RSpec.describe Legion::Extensions::Agentic::Language::Grammar::Helpers::GrammarE
       expect(c.specificity).to eq(:detailed)
       expect(c.scope).to eq(:global)
       expect(c.dynamicity).to eq(0.8)
+    end
+
+    it 'returns nil for invalid specificity' do
+      result = engine.create_construal(**construal_params, specificity: :bogus)
+      expect(result).to be_nil
+      expect(engine.to_h[:construals_count]).to eq(0)
+    end
+
+    it 'accepts all valid SPECIFICITY_LEVELS' do
+      Legion::Extensions::Agentic::Language::Grammar::Helpers::Constants::SPECIFICITY_LEVELS.each do |level|
+        c = engine.create_construal(**construal_params, specificity: level)
+        expect(c).to be_a(Legion::Extensions::Agentic::Language::Grammar::Helpers::Construal)
+      end
+    end
+
+    it 'returns nil for invalid scope' do
+      result = engine.create_construal(**construal_params, scope: :bogus)
+      expect(result).to be_nil
+      expect(engine.to_h[:construals_count]).to eq(0)
+    end
+
+    it 'accepts all valid SCOPE_LEVELS' do
+      Legion::Extensions::Agentic::Language::Grammar::Helpers::Constants::SCOPE_LEVELS.each do |level|
+        c = engine.create_construal(**construal_params, scope: level)
+        expect(c).to be_a(Legion::Extensions::Agentic::Language::Grammar::Helpers::Construal)
+      end
     end
   end
 

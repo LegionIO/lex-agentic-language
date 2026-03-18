@@ -45,6 +45,20 @@ RSpec.describe Legion::Extensions::Agentic::Language::FrameSemantics::Helpers::F
       result = frame.add_slot(name: :seller)
       expect(result).to be(frame)
     end
+
+    it 'returns nil for invalid slot_type' do
+      result = frame.add_slot(name: :buyer, slot_type: :bogus)
+      expect(result).to be_nil
+      expect(frame.slots).not_to have_key(:buyer)
+    end
+
+    it 'accepts all valid SLOT_TYPES' do
+      Legion::Extensions::Agentic::Language::FrameSemantics::Helpers::SLOT_TYPES.each do |type|
+        f = described_class.new(name: :test, domain: :test)
+        result = f.add_slot(name: :slot, slot_type: type)
+        expect(result).to be(f)
+      end
+    end
   end
 
   describe '#fill_slot' do
