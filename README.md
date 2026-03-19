@@ -5,7 +5,7 @@ Domain consolidation gem for language processing and communication. Bundles 9 so
 ## Overview
 
 **Gem**: `lex-agentic-language`
-**Version**: 0.1.0
+**Version**: 0.1.2
 **Namespace**: `Legion::Extensions::Agentic::Language`
 
 ## Sub-Modules
@@ -32,7 +32,7 @@ gem 'lex-agentic-language'
 
 ```bash
 bundle install
-bundle exec rspec        # 0 failures
+bundle exec rspec        # 735 examples, 0 failures
 bundle exec rubocop      # 0 offenses
 ```
 

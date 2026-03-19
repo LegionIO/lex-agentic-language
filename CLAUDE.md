@@ -28,6 +28,6 @@ Domain consolidation gem for language processing and communication. Bundles 9 so
 
 ```bash
 bundle install
-bundle exec rspec        # 0 failures
+bundle exec rspec        # 735 examples, 0 failures
 bundle exec rubocop      # 0 offenses
 ```
