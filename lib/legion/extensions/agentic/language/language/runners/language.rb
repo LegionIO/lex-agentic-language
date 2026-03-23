@@ -15,8 +15,8 @@ module Legion
                 summary = Helpers::Summarizer.summarize_domain(traces, domain: domain.to_sym, depth: depth.to_sym)
                 lexicon.store_summary(domain, summary)
 
-                Legion::Logging.debug "[language] summarize domain=#{domain} traces=#{traces.size} " \
-                                      "knowledge=#{summary[:knowledge_level]}"
+                log.debug "[language] summarize domain=#{domain} traces=#{traces.size} " \
+                          "knowledge=#{summary[:knowledge_level]}"
                 summary
               end
 

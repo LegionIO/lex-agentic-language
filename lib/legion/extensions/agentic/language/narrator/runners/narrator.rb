@@ -19,7 +19,7 @@ module Legion
                   if llm_result
                     entry = entry.merge(narrative: llm_result, source: :llm)
                     journal.append(entry)
-                    Legion::Logging.debug "[narrator] mood=#{entry[:mood]} source=llm sections=#{entry[:sections].keys.size}"
+                    log.debug "[narrator] mood=#{entry[:mood]} source=llm sections=#{entry[:sections].keys.size}"
                     return {
                       narrative: entry[:narrative],
                       mood:      entry[:mood],
@@ -31,7 +31,7 @@ module Legion
                 end
 
                 journal.append(entry)
-                Legion::Logging.debug "[narrator] mood=#{entry[:mood]} sections=#{entry[:sections].keys.size}"
+                log.debug "[narrator] mood=#{entry[:mood]} sections=#{entry[:sections].keys.size}"
 
                 {
                   narrative: entry[:narrative],
