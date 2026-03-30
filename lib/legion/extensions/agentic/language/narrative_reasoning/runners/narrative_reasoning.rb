@@ -7,8 +7,8 @@ module Legion
         module NarrativeReasoning
           module Runners
             module NarrativeReasoning
-              include Legion::Extensions::Helpers::Lex if Legion::Extensions.const_defined?(:Helpers) &&
-                                                          Legion::Extensions::Helpers.const_defined?(:Lex)
+              include Legion::Extensions::Helpers::Lex if Legion::Extensions.const_defined?(:Helpers, false) &&
+                                                          Legion::Extensions::Helpers.const_defined?(:Lex, false)
 
               def create_narrative(title:, domain: nil, **)
                 narrative = narrative_engine.create_narrative(title: title, domain: domain)

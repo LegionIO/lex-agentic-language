@@ -7,8 +7,8 @@ module Legion
         module Grammar
           module Runners
             module CognitiveGrammar
-              include Legion::Extensions::Helpers::Lex if Legion::Extensions.const_defined?(:Helpers) &&
-                                                          Legion::Extensions::Helpers.const_defined?(:Lex)
+              include Legion::Extensions::Helpers::Lex if Legion::Extensions.const_defined?(:Helpers, false) &&
+                                                          Legion::Extensions::Helpers.const_defined?(:Lex, false)
 
               def create_grammar_construction(form:, meaning:, expression_type:, domain:, **)
                 construction = engine.create_construction(

@@ -21,7 +21,7 @@ RSpec.describe Legion::Extensions::Agentic::Language::Language::Runners::Languag
   end
 
   def make_traces(count, domain: :networking)
-    count.times.map do |i|
+    Array.new(count) do |i|
       base_trace.merge(
         trace_id:    "trace-#{i}",
         domain_tags: [domain],
