@@ -7,8 +7,8 @@ module Legion
         module ConceptualMetaphor
           module Runners
             module ConceptualMetaphor
-              include Legion::Extensions::Helpers::Lex if Legion::Extensions.const_defined?(:Helpers) &&
-                                                          Legion::Extensions::Helpers.const_defined?(:Lex)
+              include Legion::Extensions::Helpers::Lex if Legion::Extensions.const_defined?(:Helpers, false) &&
+                                                          Legion::Extensions::Helpers.const_defined?(:Lex, false)
 
               def create_metaphor(source_domain:, target_domain:, metaphor_type:,
                                   mappings:, strength: nil, conventionality: nil, **)
