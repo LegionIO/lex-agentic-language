@@ -18,7 +18,7 @@ module Legion
 
               def available?
                 !!(defined?(Legion::LLM) && Legion::LLM.respond_to?(:started?) && Legion::LLM.started?)
-              rescue StandardError
+              rescue StandardError => _e
                 false
               end
 
@@ -27,7 +27,7 @@ module Legion
                 response = llm_ask(prompt)
                 parse_narrate_response(response)
               rescue StandardError => e
-                Legion::Logging.warn "[narrator:llm] narrate failed: #{e.message}"
+                Legion::Logging.warn("[narrator:llm] narrate failed: #{e.message}") # rubocop:disable Legion/HelperMigration/DirectLogging
                 nil
               end
 
@@ -43,7 +43,7 @@ module Legion
                   content = response&.message&.dig(:content)
                   ::Struct.new(:content).new(content) if content
                 else
-                  chat = Legion::LLM.chat
+                  chat = Legion::LLM.chat # rubocop:disable Legion/HelperMigration/DirectLlm
                   chat.with_instructions(SYSTEM_PROMPT)
                   chat.ask(prompt)
                 end
@@ -54,7 +54,7 @@ module Legion
                 !!(defined?(Legion::LLM::Pipeline::GaiaCaller) &&
                    Legion::LLM.respond_to?(:pipeline_enabled?) &&
                    Legion::LLM.pipeline_enabled?)
-              rescue StandardError
+              rescue StandardError => _e
                 false
               end
               private_class_method :pipeline_available?
@@ -80,7 +80,8 @@ module Legion
               end
 
               def curiosity_section(cur)
-                "CURIOSITY:\n- Intensity: #{cur[:intensity] || 0.0}\n- Active questions: #{cur[:wonder_count] || 0}\n- Top question: #{cur[:top_wonder] || 'none'}"
+                "CURIOSITY:\n- Intensity: #{cur[:intensity] || 0.0}\n" \
+                  "- Active questions: #{cur[:wonder_count] || 0}\n- Top question: #{cur[:top_wonder] || 'none'}"
               end
 
               def prediction_section(pred)

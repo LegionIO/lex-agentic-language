@@ -7,8 +7,8 @@ module Legion
         module Language
           module Runners
             module Language
-              include Legion::Extensions::Helpers::Lex if Legion::Extensions.const_defined?(:Helpers) &&
-                                                          Legion::Extensions::Helpers.const_defined?(:Lex)
+              include Legion::Extensions::Helpers::Lex if Legion::Extensions.const_defined?(:Helpers, false) &&
+                                                          Legion::Extensions::Helpers.const_defined?(:Lex, false)
 
               def summarize(domain:, depth: :standard, traces: [], **)
                 traces = filter_traces(traces, domain)

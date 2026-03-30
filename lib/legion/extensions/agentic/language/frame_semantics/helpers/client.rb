@@ -8,6 +8,7 @@ module Legion
           module Helpers
             class Client
               include Runners::FrameSemantics
+              include Legion::Logging::Helper
 
               private
 

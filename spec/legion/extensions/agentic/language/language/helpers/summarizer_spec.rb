@@ -19,7 +19,7 @@ RSpec.describe Legion::Extensions::Agentic::Language::Language::Helpers::Summari
   end
 
   def make_traces(count, overrides = {})
-    count.times.map do |i|
+    Array.new(count) do |i|
       base_trace.merge(trace_id: "trace-#{i}").merge(overrides)
     end
   end
