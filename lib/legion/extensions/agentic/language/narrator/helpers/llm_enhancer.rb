@@ -28,6 +28,7 @@ module Legion
                 parse_narrate_response(response)
               rescue StandardError => e
                 Legion::Logging.warn("[narrator:llm] narrate failed: #{e.message}") # rubocop:disable Legion/HelperMigration/DirectLogging
+                Legion::Logging.warn(e.backtrace) # rubocop:disable Legion/HelperMigration/DirectLogging
                 nil
               end
 
@@ -48,15 +49,18 @@ module Legion
                   chat.ask(prompt)
                 end
               end
+
               private_class_method :llm_ask
 
               def pipeline_available?
                 !!(defined?(Legion::LLM::Pipeline::GaiaCaller) &&
-                   Legion::LLM.respond_to?(:pipeline_enabled?) &&
-                   Legion::LLM.pipeline_enabled?)
-              rescue StandardError => _e
+                  Legion::LLM.respond_to?(:pipeline_enabled?) &&
+                  Legion::LLM.pipeline_enabled?)
+              rescue StandardError => e
+                Legion::Logging.warn("pipeline_available? #{e.class}: #{e.message}") # rubocop:disable Legion/HelperMigration/DirectLogging
                 false
               end
+
               private_class_method :pipeline_available?
 
               def build_narrate_prompt(sections_data)

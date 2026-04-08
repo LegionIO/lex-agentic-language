@@ -84,6 +84,7 @@ RSpec.describe Legion::Extensions::Agentic::Language::Narrator::Helpers::LlmEnha
         stub_const('Legion::LLM', llm_double)
 
         expect(Legion::Logging).to receive(:warn).with(/narrator:llm.*narrate failed/)
+        expect(Legion::Logging).to receive(:warn).with(instance_of(Array))
         result = described_class.narrate(sections_data: sections_data)
         expect(result).to be_nil
       end
