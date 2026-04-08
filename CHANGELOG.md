@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.7] - 2026-04-08
+
+### Fixed
+- log backtrace in narrator llm_enhancer when narrate raises, aiding error diagnosis
+- log warning in pipeline_available? rescue instead of silently swallowing errors
+- improve pipeline_available? indentation and add blank lines around private_class_method declarations
+
 ## [0.1.6] - 2026-03-30
 
 ### Changed
