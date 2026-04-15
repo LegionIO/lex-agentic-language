@@ -21,6 +21,18 @@ module Legion
           false
         end
 
+        def self.mcp_tools?
+          false
+        end
+
+        def self.mcp_tools_deferred?
+          false
+        end
+
+        def self.transport_required?
+          false
+        end
+
         # Sub-modules are required here as extensions are consolidated.
       end
     end
