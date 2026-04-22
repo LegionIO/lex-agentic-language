@@ -14,12 +14,12 @@ module Legion
                 Vary your sentence structure. Use present tense. Be concise and vivid.
               PROMPT
 
+              module_function
+
               def log
                 Legion::Logging
               end
               private_class_method :log
-
-              module_function
 
               def available?
                 !!(defined?(Legion::LLM) && Legion::LLM.respond_to?(:started?) && Legion::LLM.started?)
