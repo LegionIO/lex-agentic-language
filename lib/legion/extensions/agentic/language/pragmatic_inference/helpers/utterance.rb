@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+# PragmaticInference::Helpers::Utterance — represents a single communicative act
+# evaluated through Gricean maxims (quantity, quality, relation, manner).
+#
+# Key fields: speaker, speech_act, literal_meaning, maxim_scores, implicatures, confidence.
+# Maxim compliance is scored per-maxim and aggregated via #overall_compliance.
+# Violations and implicatures are accumulated after construction via mutation methods.
+#
+# Compare with InnerSpeech::Helpers::Utterance, which models inner-voice tokens
+# (mode, urgency, salience, decay) and carries NO maxim or implicature logic.
+
 require 'securerandom'
 
 module Legion

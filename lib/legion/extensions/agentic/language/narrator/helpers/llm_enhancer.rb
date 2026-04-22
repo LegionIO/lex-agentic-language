@@ -18,7 +18,8 @@ module Legion
 
               def available?
                 !!(defined?(Legion::LLM) && Legion::LLM.respond_to?(:started?) && Legion::LLM.started?)
-              rescue StandardError => _e
+              rescue StandardError => e
+                Legion::Logging.debug("[narrator:llm] available? check failed: #{e.class}: #{e.message}") # rubocop:disable Legion/HelperMigration/DirectLogging
                 false
               end
 

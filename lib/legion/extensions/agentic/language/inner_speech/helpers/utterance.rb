@@ -1,5 +1,16 @@
 # frozen_string_literal: true
 
+# InnerSpeech::Helpers::Utterance — represents a single token of inner-voice activity.
+#
+# Key fields: mode (narrating/planning/questioning/…), voice (rational/bold/cautious/…),
+# urgency (0–1), salience (0–1, subject to temporal decay via #decay_salience!).
+# Salience decays over time via the InnerSpeech decay actor (every 60 s), which calls
+# Runners::InnerSpeech#update_inner_speech → InnerVoice#tick → SpeechStream#decay_all.
+#
+# Compare with PragmaticInference::Helpers::Utterance, which models an external
+# communicative act scored against Gricean maxims with implicature accumulation.
+# That class carries NO urgency, salience, or decay logic.
+
 module Legion
   module Extensions
     module Agentic
