@@ -63,7 +63,7 @@ module Legion
                   Legion::LLM.respond_to?(:pipeline_enabled?) &&
                   Legion::LLM.pipeline_enabled?)
               rescue StandardError => e
-                Legion::Logging.warn("pipeline_available? #{e.class}: #{e.message}") # rubocop:disable Legion/HelperMigration/DirectLogging
+                log.warn("[narrator:llm] pipeline_available? #{e.class}: #{e.message}")
                 false
               end
 
