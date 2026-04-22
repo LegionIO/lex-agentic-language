@@ -16,9 +16,15 @@ module Legion
 
               module_function
 
+              def log
+                Legion::Logging
+              end
+              private_class_method :log
+
               def available?
                 !!(defined?(Legion::LLM) && Legion::LLM.respond_to?(:started?) && Legion::LLM.started?)
-              rescue StandardError => _e
+              rescue StandardError => e
+                log.debug("[narrator:llm] available? check failed: #{e.class}: #{e.message}")
                 false
               end
 
@@ -27,8 +33,8 @@ module Legion
                 response = llm_ask(prompt)
                 parse_narrate_response(response)
               rescue StandardError => e
-                Legion::Logging.warn("[narrator:llm] narrate failed: #{e.message}") # rubocop:disable Legion/HelperMigration/DirectLogging
-                Legion::Logging.warn(e.backtrace) # rubocop:disable Legion/HelperMigration/DirectLogging
+                log.warn("[narrator:llm] narrate failed: #{e.message}")
+                log.warn(e.backtrace)
                 nil
               end
 
@@ -57,7 +63,7 @@ module Legion
                   Legion::LLM.respond_to?(:pipeline_enabled?) &&
                   Legion::LLM.pipeline_enabled?)
               rescue StandardError => e
-                Legion::Logging.warn("pipeline_available? #{e.class}: #{e.message}") # rubocop:disable Legion/HelperMigration/DirectLogging
+                log.warn("[narrator:llm] pipeline_available? #{e.class}: #{e.message}")
                 false
               end
 

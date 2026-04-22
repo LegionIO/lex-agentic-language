@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.9] - 2026-04-22
+### Added
+- InnerSpeech::Actor::DecayInnerSpeech (60s) — first actor in the extension, enables autonomous salience decay
+### Fixed
+- LlmEnhancer `available?` now logs errors at debug level instead of swallowing silently
+- Documented PragmaticInference::Utterance vs InnerSpeech::Utterance schema distinctions
+
 ## [0.1.8] - 2026-04-15
 ### Changed
 - Set `mcp_tools?`, `mcp_tools_deferred?`, and `transport_required?` to `false` — internal cognitive pipeline extension
