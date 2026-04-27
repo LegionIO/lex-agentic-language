@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'concurrent/atomic/atomic_reference'
+
 module Legion
   module Extensions
     module Agentic
@@ -13,6 +15,8 @@ module Legion
                 Write 3-5 sentences that feel like genuine introspection, not a report.
                 Vary your sentence structure. Use present tense. Be concise and vivid.
               PROMPT
+              FAILURE_LOG_INTERVAL = 60
+              FAILURE_LOGGED_AT = Concurrent::AtomicReference.new
 
               module_function
 
@@ -33,8 +37,7 @@ module Legion
                 response = llm_ask(prompt)
                 parse_narrate_response(response)
               rescue StandardError => e
-                log.warn("[narrator:llm] narrate failed: #{e.message}")
-                log.warn(e.backtrace)
+                log_failure(e)
                 nil
               end
 
@@ -68,6 +71,25 @@ module Legion
               end
 
               private_class_method :pipeline_available?
+
+              def log_failure(error)
+                if log_failure_now?
+                  log.warn("[narrator:llm] narrate failed: #{error.class}: #{error.message}")
+                  FAILURE_LOGGED_AT.set(Time.now.utc)
+                end
+                log.debug(error.backtrace)
+              end
+
+              private_class_method :log_failure
+
+              def log_failure_now?
+                last_logged_at = FAILURE_LOGGED_AT.get
+                return true unless last_logged_at
+
+                (Time.now.utc - last_logged_at) >= FAILURE_LOG_INTERVAL
+              end
+
+              private_class_method :log_failure_now?
 
               def build_narrate_prompt(sections_data)
                 parts = [

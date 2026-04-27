@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.10] - 2026-04-27
+### Fixed
+- Narrator LLM enhancement now skips empty idle narration and rate-limits provider failure warnings without warning-level backtrace floods. Fixes #7
+
 ## [0.1.9] - 2026-04-22
 ### Added
 - InnerSpeech::Actor::DecayInnerSpeech (60s) — first actor in the extension, enables autonomous salience decay
