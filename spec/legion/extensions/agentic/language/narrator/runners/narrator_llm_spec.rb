@@ -4,9 +4,10 @@ RSpec.describe Legion::Extensions::Agentic::Language::Narrator::Runners::Narrato
   let(:client) { Legion::Extensions::Agentic::Language::Narrator::Client.new }
 
   describe '#narrate with LLM available' do
+    let(:chat_double) { double('chat') }
+
     before do
       response_double = double('response', content: 'I feel a deep sense of focus and possibility.')
-      chat_double = double('chat')
       allow(chat_double).to receive(:with_instructions)
       allow(chat_double).to receive(:ask).and_return(response_double)
       llm_double = double('Legion::LLM', started?: true)
@@ -22,8 +23,8 @@ RSpec.describe Legion::Extensions::Agentic::Language::Narrator::Runners::Narrato
       expect(result[:source]).to eq(:llm)
     end
 
-    it 'returns the LLM narrative string' do
-      result = client.narrate(tick_results: {}, cognitive_state: {})
+    it 'returns the LLM narrative string when there is meaningful cognitive data' do
+      result = client.narrate(tick_results: { emotional_evaluation: { valence: 0.6 } }, cognitive_state: {})
       expect(result[:narrative]).to eq('I feel a deep sense of focus and possibility.')
     end
 
@@ -34,8 +35,17 @@ RSpec.describe Legion::Extensions::Agentic::Language::Narrator::Runners::Narrato
     end
 
     it 'appends to journal' do
-      client.narrate(tick_results: {}, cognitive_state: {})
+      client.narrate(tick_results: { emotional_evaluation: { valence: 0.6 } }, cognitive_state: {})
       expect(client.journal.size).to eq(1)
+    end
+
+    it 'uses the mechanical pipeline for empty idle narration' do
+      expect(chat_double).not_to receive(:ask)
+
+      result = client.narrate(tick_results: {}, cognitive_state: {})
+
+      expect(result).not_to have_key(:source)
+      expect(result[:narrative]).to be_a(String)
     end
   end
 
@@ -50,7 +60,7 @@ RSpec.describe Legion::Extensions::Agentic::Language::Narrator::Runners::Narrato
     end
 
     it 'falls back to mechanical pipeline' do
-      result = client.narrate(tick_results: {}, cognitive_state: {})
+      result = client.narrate(tick_results: { emotional_evaluation: { valence: 0.6 } }, cognitive_state: {})
       expect(result).not_to have_key(:source)
       expect(result[:narrative]).to be_a(String)
     end

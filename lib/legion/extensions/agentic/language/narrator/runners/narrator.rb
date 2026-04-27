@@ -13,7 +13,7 @@ module Legion
               def narrate(tick_results: {}, cognitive_state: {}, **)
                 entry = Helpers::Synthesizer.narrate(tick_results: tick_results, cognitive_state: cognitive_state)
 
-                if Helpers::LlmEnhancer.available?
+                if Helpers::LlmEnhancer.available? && meaningful_for_llm?(tick_results, cognitive_state)
                   sections_data = build_llm_sections_data(tick_results, cognitive_state, entry)
                   llm_result = Helpers::LlmEnhancer.narrate(sections_data: sections_data)
                   if llm_result
@@ -101,6 +101,25 @@ module Legion
 
               def journal
                 @journal ||= Helpers::Journal.new
+              end
+
+              def meaningful_for_llm?(tick_results, cognitive_state)
+                meaningful_hash?(tick_results) || meaningful_hash?(cognitive_state)
+              end
+
+              def meaningful_hash?(value)
+                return false unless value.is_a?(Hash)
+
+                value.any? do |_, nested|
+                  case nested
+                  when Hash
+                    meaningful_hash?(nested)
+                  when Array
+                    nested.any?
+                  else
+                    !nested.nil?
+                  end
+                end
               end
 
               def build_llm_sections_data(tick_results, cognitive_state, entry)

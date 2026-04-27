@@ -78,15 +78,27 @@ RSpec.describe Legion::Extensions::Agentic::Language::Narrator::Helpers::LlmEnha
     end
 
     context 'when an error occurs' do
-      it 'returns nil and logs a warning' do
+      before { described_class::FAILURE_LOGGED_AT.set(nil) }
+
+      it 'returns nil and logs a concise warning with debug backtrace' do
         llm_double = double('Legion::LLM', started?: true)
         allow(llm_double).to receive(:chat).and_raise(StandardError, 'connection failed')
         stub_const('Legion::LLM', llm_double)
 
-        expect(Legion::Logging).to receive(:warn).with(/narrator:llm.*narrate failed/)
-        expect(Legion::Logging).to receive(:warn).with(instance_of(Array))
+        expect(Legion::Logging).to receive(:warn).with(/narrator:llm.*StandardError: connection failed/)
+        expect(Legion::Logging).to receive(:debug).with(instance_of(Array))
         result = described_class.narrate(sections_data: sections_data)
         expect(result).to be_nil
+      end
+
+      it 'throttles repeated failure warnings' do
+        llm_double = double('Legion::LLM', started?: true)
+        allow(llm_double).to receive(:chat).and_raise(StandardError, 'connection failed')
+        stub_const('Legion::LLM', llm_double)
+        allow(Legion::Logging).to receive(:debug)
+
+        expect(Legion::Logging).to receive(:warn).once
+        2.times { described_class.narrate(sections_data: sections_data) }
       end
     end
 
