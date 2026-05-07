@@ -51,15 +51,38 @@ module Legion
                     caller:  { extension: 'lex-agentic-language', mode: :narrator }
                   )
                   content = response&.message&.dig(:content)
-                  ::Struct.new(:content).new(content) if content
                 else
-                  chat = Legion::LLM.chat # rubocop:disable Legion/HelperMigration/DirectLlm
-                  chat.with_instructions(SYSTEM_PROMPT)
-                  chat.ask(prompt)
+                  response = Legion::LLM.chat( # rubocop:disable Legion/HelperMigration/DirectLlm
+                    message: [
+                      { role: 'system', content: SYSTEM_PROMPT },
+                      { role: 'user', content: prompt }
+                    ],
+                    caller:  { extension: 'lex-agentic-language', mode: :narrator }
+                  )
+                  content = extract_response_content(response, prompt)
                 end
+                ::Struct.new(:content).new(content) if content
               end
 
               private_class_method :llm_ask
+
+              def extract_response_content(response, prompt = nil)
+                return response.strip if response.is_a?(String)
+                return response.content if response.respond_to?(:content)
+
+                if response.respond_to?(:ask)
+                  response.with_instructions(SYSTEM_PROMPT) if response.respond_to?(:with_instructions)
+                  asked = response.ask(prompt)
+                  return extract_response_content(asked)
+                end
+                return nil unless response.is_a?(Hash)
+
+                response[:content] || response['content'] ||
+                  response.dig(:message, :content) || response.dig('message', 'content') ||
+                  response[:response] || response['response']
+              end
+
+              private_class_method :extract_response_content
 
               def pipeline_available?
                 !!(defined?(Legion::LLM::Pipeline::GaiaCaller) &&

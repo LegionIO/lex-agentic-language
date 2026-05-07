@@ -49,27 +49,32 @@ RSpec.describe Legion::Extensions::Agentic::Language::Narrator::Helpers::LlmEnha
 
     context 'when LLM returns a response' do
       it 'returns the response content as a string' do
-        response_double = double('response', content: 'I feel alert and curious about what lies ahead.')
-        chat_double = double('chat')
-        allow(chat_double).to receive(:with_instructions)
-        allow(chat_double).to receive(:ask).and_return(response_double)
         llm_double = double('Legion::LLM', started?: true)
-        allow(llm_double).to receive(:chat).and_return(chat_double)
+        allow(llm_double).to receive(:chat).and_return(content: 'I feel alert and curious about what lies ahead.')
         stub_const('Legion::LLM', llm_double)
 
         result = described_class.narrate(sections_data: sections_data)
         expect(result).to be_a(String)
         expect(result).to eq('I feel alert and curious about what lies ahead.')
       end
+
+      it 'sends system instructions and user prompt in the native chat message payload' do
+        llm_double = double('Legion::LLM', started?: true)
+        allow(llm_double).to receive(:chat).and_return(content: 'native narrative')
+        stub_const('Legion::LLM', llm_double)
+
+        described_class.narrate(sections_data: sections_data)
+
+        expect(llm_double).to have_received(:chat)
+          .with(hash_including(message: array_including(hash_including(role: 'system'),
+                                                        hash_including(role: 'user'))))
+      end
     end
 
     context 'when LLM returns nil response' do
       it 'returns nil' do
-        chat_double = double('chat')
-        allow(chat_double).to receive(:with_instructions)
-        allow(chat_double).to receive(:ask).and_return(nil)
         llm_double = double('Legion::LLM', started?: true)
-        allow(llm_double).to receive(:chat).and_return(chat_double)
+        allow(llm_double).to receive(:chat).and_return(nil)
         stub_const('Legion::LLM', llm_double)
 
         result = described_class.narrate(sections_data: sections_data)
@@ -104,12 +109,8 @@ RSpec.describe Legion::Extensions::Agentic::Language::Narrator::Helpers::LlmEnha
 
     context 'with empty sections_data' do
       it 'does not raise and returns a string when LLM responds' do
-        response_double = double('response', content: 'Everything seems quiet.')
-        chat_double = double('chat')
-        allow(chat_double).to receive(:with_instructions)
-        allow(chat_double).to receive(:ask).and_return(response_double)
         llm_double = double('Legion::LLM', started?: true)
-        allow(llm_double).to receive(:chat).and_return(chat_double)
+        allow(llm_double).to receive(:chat).and_return(content: 'Everything seems quiet.')
         stub_const('Legion::LLM', llm_double)
 
         result = described_class.narrate(sections_data: {})
