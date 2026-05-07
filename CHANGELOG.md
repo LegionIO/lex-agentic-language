@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.11] - 2026-05-07
+### Fixed
+- Narrator LLM enhancement now sends native chat message payloads with system/user roles while preserving legacy session fallback for older test doubles.
+- LLM narration state maps reflection `unacted_count` into pending adaptations.
+
 ## [0.1.10] - 2026-04-27
 ### Fixed
 - Narrator LLM enhancement now skips empty idle narration and rate-limits provider failure warnings without warning-level backtrace floods. Fixes #7

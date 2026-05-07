@@ -33,6 +33,15 @@ RSpec.describe Legion::Extensions::Agentic::Language::Narrator::Runners::Narrato
     end
   end
 
+  describe 'reflection data for LLM narration' do
+    it 'maps reflection unacted_count to pending_adaptations' do
+      data = client.send(:llm_reflection_data, reflection: { health: 0.7, unacted_count: 3 })
+
+      expect(data[:health]).to eq(0.7)
+      expect(data[:pending_adaptations]).to eq(3)
+    end
+  end
+
   describe '#recent_entries' do
     before do
       5.times { |i| client.narrate(tick_results: { emotional_evaluation: { valence: i * 0.2 } }, cognitive_state: {}) }

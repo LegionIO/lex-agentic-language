@@ -187,7 +187,7 @@ module Legion
                 r = cognitive_state[:reflection] || {}
                 {
                   health:              r[:health] || 1.0,
-                  pending_adaptations: r[:pending_adaptations] || 0
+                  pending_adaptations: r[:pending_adaptations] || r[:unacted_count] || 0
                 }
               end
 
