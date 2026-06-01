@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.12] - 2026-06-01
+### Fixed
+- `SpeechStream#append` used `:"utt_#{@counter}"` (interpolated Symbol) causing unbounded Symbol allocation — changed to String ID
+- `Utterance#resolve_mode` and `#resolve_voice` called `to_sym` on arbitrary user input — replaced with safe string-based lookup returning only pre-existing constant Symbols
+- `InnerVoice#switch_voice` called `to_sym` on user input — added `resolve_voice` helper with same safe pattern
+- `CognitiveGrammar` runner called `.to_h` on nil when engine rejects invalid input — added nil guards returning structured error responses
+
 ## [0.1.11] - 2026-05-07
 ### Fixed
 - Narrator LLM enhancement now sends native chat message payloads with system/user roles while preserving legacy session fallback for older test doubles.

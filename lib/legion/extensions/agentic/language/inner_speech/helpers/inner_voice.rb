@@ -32,8 +32,8 @@ module Legion
               end
 
               def switch_voice(voice:)
-                sym = voice.to_sym
-                return nil unless VOICE_TYPES.include?(sym)
+                sym = resolve_voice(voice)
+                return nil unless sym
 
                 old_voice = @active_voice
                 @active_voice = sym
@@ -127,6 +127,14 @@ module Legion
               end
 
               private
+
+              def resolve_voice(voice)
+                return voice if voice.is_a?(Symbol) && VOICE_TYPES.include?(voice)
+
+                voice_str = voice.to_s
+                index = VOICE_TYPES.map(&:to_s).index(voice_str)
+                index ? VOICE_TYPES[index] : nil
+              end
 
               def record_event(type, **details)
                 @history << { type: type, at: Time.now.utc }.merge(details)

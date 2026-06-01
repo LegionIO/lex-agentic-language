@@ -11,7 +11,7 @@ RSpec.describe Legion::Extensions::Agentic::Language::InnerSpeech::Runners::Inne
     it 'creates an utterance' do
       result = host.inner_speak(content: 'testing', mode: :planning)
       expect(result[:success]).to be true
-      expect(result[:utterance_id]).to be_a(Symbol)
+      expect(result[:utterance_id]).to be_a(String)
       expect(result[:mode]).to eq(:planning)
     end
   end

@@ -84,13 +84,19 @@ module Legion
               end
 
               def resolve_mode(mode)
-                sym = mode.to_sym
-                SPEECH_MODES.include?(sym) ? sym : :narrating
+                return mode if mode.is_a?(Symbol) && SPEECH_MODES.include?(mode)
+
+                mode_str = mode.to_s
+                index = SPEECH_MODES.map(&:to_s).index(mode_str)
+                index ? SPEECH_MODES[index] : :narrating
               end
 
               def resolve_voice(voice)
-                sym = voice.to_sym
-                VOICE_TYPES.include?(sym) ? sym : :rational
+                return voice if voice.is_a?(Symbol) && VOICE_TYPES.include?(voice)
+
+                voice_str = voice.to_s
+                index = VOICE_TYPES.map(&:to_s).index(voice_str)
+                index ? VOICE_TYPES[index] : :rational
               end
             end
           end

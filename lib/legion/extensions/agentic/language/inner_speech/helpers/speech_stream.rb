@@ -21,7 +21,7 @@ module Legion
 
                 @counter += 1
                 utterance = Utterance.new(
-                  id:      :"utt_#{@counter}",
+                  id:      "utt_#{@counter}",
                   content: content,
                   mode:    mode,
                   **

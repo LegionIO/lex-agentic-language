@@ -40,6 +40,8 @@ module Legion
               def create_blend(space_a_id:, space_b_id:, blend_type: :double_scope, **)
                 log.debug "[conceptual_blending] blend: a=#{space_a_id} b=#{space_b_id} type=#{blend_type}"
                 blend = engine.blend(space_a_id: space_a_id, space_b_id: space_b_id, blend_type: blend_type)
+                return { success: false, reason: :invalid_blend_type } unless blend
+
                 { success: true, blend: blend.to_h }
               rescue ArgumentError => e
                 log.debug "[conceptual_blending] blend failed: #{e.message}"

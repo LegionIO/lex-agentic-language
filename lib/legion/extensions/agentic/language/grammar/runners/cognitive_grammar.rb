@@ -17,6 +17,8 @@ module Legion
                   expression_type: expression_type,
                   domain:          domain
                 )
+                return { created: false, reason: :invalid_expression_type } unless construction
+
                 log.debug "[cognitive_grammar] created construction form=#{form} type=#{expression_type} domain=#{domain}"
                 construction.to_h
               end
@@ -34,6 +36,8 @@ module Legion
                   dynamicity:      dynamicity,
                   construction_id: construction_id
                 )
+                return { created: false, reason: :invalid_parameters } unless construal
+
                 log.debug "[cognitive_grammar] created construal scene=#{scene} figure=#{figure}"
                 construal.to_h
               end
