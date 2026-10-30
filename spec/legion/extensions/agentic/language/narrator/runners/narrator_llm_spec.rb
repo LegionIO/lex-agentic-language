@@ -47,6 +47,30 @@ RSpec.describe Legion::Extensions::Agentic::Language::Narrator::Runners::Narrato
       expect(result).not_to have_key(:source)
       expect(result[:narrative]).to be_a(String)
     end
+
+    it 'does not invoke an LLM for dream provenance and phase bookkeeping alone' do
+      expect(chat_double).not_to receive(:ask)
+
+      result = client.narrate(
+        tick_results:    { tick_seq: 42, memory_consolidation: { success: true },
+                           emotional_evaluation: { status: :completed } },
+        cognitive_state: { source: :dream }
+      )
+
+      expect(result).not_to have_key(:source)
+      expect(client.current_narrative[:narrative]).to eq(result[:narrative])
+    end
+
+    it 'narrates an explicitly observed zero rather than treating it as missing input' do
+      expect(chat_double).to receive(:ask).with(include('Valence: 0.0'))
+
+      result = client.narrate(
+        tick_results:    { emotional_evaluation: { valence: 0.0 } },
+        cognitive_state: { source: :dream }
+      )
+
+      expect(result[:source]).to eq(:llm)
+    end
   end
 
   describe '#narrate with LLM available but narrate returns nil' do

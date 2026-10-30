@@ -13,8 +13,8 @@ module Legion
               def narrate(tick_results: {}, cognitive_state: {}, **)
                 entry = Helpers::Synthesizer.narrate(tick_results: tick_results, cognitive_state: cognitive_state)
 
-                if Helpers::LlmEnhancer.available? && meaningful_for_llm?(tick_results, cognitive_state)
-                  sections_data = build_llm_sections_data(tick_results, cognitive_state, entry)
+                sections_data = build_llm_sections_data(tick_results, cognitive_state) if Helpers::LlmEnhancer.available?
+                if sections_data && meaningful_hash?(sections_data)
                   llm_result = Helpers::LlmEnhancer.narrate(sections_data: sections_data)
                   if llm_result
                     entry = entry.merge(narrative: llm_result, source: :llm)
@@ -103,10 +103,6 @@ module Legion
                 @journal ||= Helpers::Journal.new
               end
 
-              def meaningful_for_llm?(tick_results, cognitive_state)
-                meaningful_hash?(tick_results) || meaningful_hash?(cognitive_state)
-              end
-
               def meaningful_hash?(value)
                 return false unless value.is_a?(Hash)
 
@@ -122,15 +118,14 @@ module Legion
                 end
               end
 
-              def build_llm_sections_data(tick_results, cognitive_state, entry)
+              def build_llm_sections_data(tick_results, cognitive_state)
                 {
                   emotion:    llm_emotion_data(tick_results, cognitive_state),
                   curiosity:  llm_curiosity_data(tick_results, cognitive_state),
                   prediction: llm_prediction_data(tick_results, cognitive_state),
                   memory:     llm_memory_data(tick_results, cognitive_state),
                   attention:  llm_attention_data(tick_results, cognitive_state),
-                  reflection: llm_reflection_data(cognitive_state),
-                  mood:       entry[:mood]
+                  reflection: llm_reflection_data(cognitive_state)
                 }
               end
 
@@ -138,8 +133,8 @@ module Legion
                 v = tick_results[:emotional_evaluation] || {}
                 g = tick_results[:gut_instinct] || cognitive_state[:gut] || {}
                 {
-                  valence: v[:valence] || cognitive_state.dig(:emotion, :valence) || 0.0,
-                  arousal: v[:arousal] || cognitive_state.dig(:emotion, :arousal) || 0.5,
+                  valence: v[:valence] || cognitive_state.dig(:emotion, :valence),
+                  arousal: v[:arousal] || cognitive_state.dig(:emotion, :arousal),
                   gut:     g[:signal] || g[:gut_signal]
                 }
               end
@@ -148,8 +143,8 @@ module Legion
                 c = cognitive_state[:curiosity] || {}
                 w = tick_results[:working_memory_integration] || {}
                 {
-                  intensity:    c[:intensity] || w[:curiosity_intensity] || 0.0,
-                  wonder_count: c[:active_count] || w[:active_wonders] || 0,
+                  intensity:    c[:intensity] || w[:curiosity_intensity],
+                  wonder_count: c[:active_count] || w[:active_wonders],
                   top_wonder:   c[:top_question] || w[:top_question]
                 }
               end
@@ -158,8 +153,8 @@ module Legion
                 p = tick_results[:prediction_engine] || {}
                 s = cognitive_state[:prediction] || {}
                 {
-                  confidence: p[:confidence] || s[:confidence] || 0.0,
-                  pending:    s[:pending_count] || 0,
+                  confidence: p[:confidence] || s[:confidence],
+                  pending:    s[:pending_count],
                   mode:       p[:mode] || s[:mode]
                 }
               end
@@ -168,8 +163,8 @@ module Legion
                 m = cognitive_state[:memory] || {}
                 c = tick_results[:memory_consolidation] || {}
                 {
-                  trace_count: m[:trace_count] || c[:remaining] || 0,
-                  health:      m[:health] || 1.0
+                  trace_count: m[:trace_count] || c[:remaining],
+                  health:      m[:health]
                 }
               end
 
@@ -177,8 +172,8 @@ module Legion
                 a = tick_results[:sensory_processing] || {}
                 f = cognitive_state[:attention_status] || {}
                 {
-                  spotlight:       a[:spotlight] || 0,
-                  peripheral:      a[:peripheral] || 0,
+                  spotlight:       a[:spotlight],
+                  peripheral:      a[:peripheral],
                   focused_domains: extract_focused_domains_for_llm(f)
                 }
               end
@@ -186,8 +181,8 @@ module Legion
               def llm_reflection_data(cognitive_state)
                 r = cognitive_state[:reflection] || {}
                 {
-                  health:              r[:health] || 1.0,
-                  pending_adaptations: r[:pending_adaptations] || r[:unacted_count] || 0
+                  health:              r[:health],
+                  pending_adaptations: r[:pending_adaptations] || r[:unacted_count]
                 }
               end
 

@@ -5,7 +5,7 @@ Domain consolidation gem for language processing and communication. Bundles 9 su
 ## Overview
 
 **Gem**: `lex-agentic-language`
-**Version**: 0.1.9
+**Version**: 0.1.13
 **Namespace**: `Legion::Extensions::Agentic::Language`
 
 ## Sub-Modules

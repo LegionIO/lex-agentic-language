@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.13] - 2026-10-29
+### Fixed
+- Only invoke narrator LLM enhancement for observations actually consumed by the narrative prompt, not dream provenance or phase bookkeeping.
+- Preserve explicitly observed zero values while applying missing-value defaults only during prompt rendering.
+
 ## [0.1.12] - 2026-06-01
 ### Fixed
 - `SpeechStream#append` used `:"utt_#{@counter}"` (interpolated Symbol) causing unbounded Symbol allocation — changed to String ID
